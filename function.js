@@ -58,7 +58,6 @@ export async function parseContent(content, api_key){
                 throw new Error(`problem in parseContent ${url}`);
             }
         }
-        await deleteJobs();
     } catch(error){
         console.error('Error Parsing Data: ', error);
     }
@@ -140,7 +139,7 @@ async function saveJob(data){
     }
 }
 
-async function deleteJobs(){
+export async function deleteJobs(){
     try{
         const twoMonthAgo = new Date();
         twoMonthAgo.setMonth(twoMonthAgo.getMonth()-2);

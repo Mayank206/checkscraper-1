@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const urls = ["https://job4freshers.co.in/wp-json/wp/v2/posts","https://offcampusjobs4u.com/wp-json/wp/v2/posts","https://freshershunt.in/wp-json/wp/v2/posts","https://www.fresheroffcampus.com/wp-json/wp/v2/posts","https://freshersvoice.com/wp-json/wp/v2/posts","https://www.jobvision.in/wp-json/wp/v2/posts","https://jobformore.com/wp-json/wp/v2/posts","https://careersquare.in/wp-json/wp/v2/posts","https://jobforfresher.in/wp-json/wp/v2/posts"];
 const api_key = process.env.API_KEY.split(",");
-import {fetchingContent, parseContent} from "./function.js";
+import {fetchingContent, parseContent, deleteJobs} from "./function.js";
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -18,5 +18,6 @@ function delay(ms) {
             await delay(2000);
         }
     }
+    await deleteJobs();
 })();
 
