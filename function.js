@@ -10,7 +10,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // MongoDB schemas
 const jobSchema = new mongoose.Schema({
     title: { type: String, required: true }, // Company name is hiring role (Job title or role being offered)
-    job_id: { type: Number, unique: true, required: true }, // Unique identifier for the job
+    job_id: { type: Number }, // Unique identifier for the job
     role: { type: String, required: true }, // Job title or role being offered
     company: { type: String, required: true }, // Company name
     skills: { type: [String], default: [] }, // Required skills (add based on job role if not mentioned)
