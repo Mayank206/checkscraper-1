@@ -145,6 +145,8 @@ export async function deleteJobs(){
         twoMonthAgo.setMonth(twoMonthAgo.getMonth()-2);
         const oldJobs = await Job.deleteMany({created_at: {$lt: twoMonthAgo}});
         console.log(`Deleted ${oldJobs} old jobs.`);
+        await mongoose.connection.close();
+        console.log("MongoDB connection closed.");
     }
     catch (error) {
         console.error("Error in deleteJobs:", error.message);

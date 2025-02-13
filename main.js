@@ -25,6 +25,7 @@ console.log("Starting job at:", new Date().toISOString());
     console.log("Deleting old jobs...");
     await deleteJobs();
     console.log("Job completed at:", new Date().toISOString());
+    process.exit(1);
 })();
 
 
