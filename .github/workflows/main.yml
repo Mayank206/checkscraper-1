@@ -2,8 +2,8 @@ name: Scheduled Main.js Execution
 
 on:
   schedule:
-    - cron:  "0 * * * *"   # Runs every hour (Adjust as needed)
-  workflow_dispatch: # Allows manual trigger
+    - cron: "*/5 * * * *"  # Runs every 5 minutes
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   run-script:
@@ -21,6 +21,20 @@ jobs:
       - name: Install Dependencies
         run: npm install  # Change this if using yarn or pnpm
 
+      - name: Inject Secrets into Environment
+        run: |
+          echo "URLS=${{ secrets.URLS }}" >> $GITHUB_ENV
+          echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
+
+      - name: Debug Environment Variables
+        run: |
+          echo "API_KEY is set: ${#API_KEY}"  # Check if API_KEY exists
+          echo "MONGODB_URI is set: ${#MONGODB_URI}"  # Check if MongoDB URI exists
+
       - name: Run main.js
         run: node main.js
-
+        env:
+          URLS: ${{ secrets.URLS }}
+          API_KEY: ${{ secrets.API_KEY }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
