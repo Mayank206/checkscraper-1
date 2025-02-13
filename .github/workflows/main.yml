@@ -23,3 +23,5 @@ jobs:
 
       - name: Run main.js
         run: node main.js
+        env:
+          URLS: ${{ secrets.URLS }}
