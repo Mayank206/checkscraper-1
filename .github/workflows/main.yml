@@ -2,8 +2,8 @@ name: Scheduled Main.js Execution
 
 on:
   schedule:
-    - cron: "*/1 * * * *" 
-  workflow_dispatch: # Allows manual trigger
+    - cron: "*/5 * * * *"  # Runs every minute
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   run-script:
@@ -21,6 +21,13 @@ jobs:
       - name: Install Dependencies
         run: npm install  # Change this if using yarn or pnpm
 
+      - name: Inject Secrets into Environment
+        run: |
+          echo "URLS=${{ secrets.URLS }}" >> $GITHUB_ENV
+          echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+
+      - name: Debug Environment Variables
+        run: echo "API_KEY=${{ secrets.API_KEY }}" | sed 's/./& /g' || echo "API_KEY is not set"
+
       - name: Run main.js
         run: node main.js
-
