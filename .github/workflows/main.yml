@@ -1,0 +1,25 @@
+name: Scheduled Main.js Execution
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Runs every hour (Adjust as needed)
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Adjust the version if needed
+
+      - name: Install Dependencies
+        run: npm install  # Change this if using yarn or pnpm
+
+      - name: Run main.js
+        run: node main.js
