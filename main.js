@@ -19,7 +19,7 @@ console.log("Starting job at:", new Date().toISOString());
             console.log(`Parsing content from: ${url}`);
             await parseContent(data, api_key[i]);
             i = (i + 1) % api_key.length;
-            await delay(2000);
+            await delay(1000);
         }
     }
     console.log("Deleting old jobs...");
