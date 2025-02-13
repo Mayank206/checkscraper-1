@@ -2,7 +2,7 @@ name: Scheduled Main.js Execution
 
 on:
   schedule:
-    - cron: "*/2 * * * *"   # Runs every hour (Adjust as needed)
+    - cron:  "0 * * * *"   # Runs every hour (Adjust as needed)
   workflow_dispatch: # Allows manual trigger
 
 jobs:
