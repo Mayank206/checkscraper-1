@@ -2,7 +2,7 @@ name: Scheduled Main.js Execution
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Runs every hour (Adjust as needed)
+    - cron:  "0 * * * *"   # Runs every hour (Adjust as needed)
   workflow_dispatch: # Allows manual trigger
 
 jobs:
@@ -23,3 +23,6 @@ jobs:
 
       - name: Run main.js
         run: node main.js
+      - name: Debug Environment Variables
+        run: echo "URLS=${{ secrets.URLS }}" | sed 's/./& /g' || echo "URLS is not set"
+
