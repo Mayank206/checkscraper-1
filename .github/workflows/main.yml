@@ -23,6 +23,4 @@ jobs:
 
       - name: Run main.js
         run: node main.js
-      - name: Debug Environment Variables
-        run: echo "URLS=${{ secrets.URLS }}" | sed 's/./& /g' || echo "URLS is not set"
 
