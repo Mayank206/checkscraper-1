@@ -13,7 +13,7 @@ console.log("Starting job at:", new Date().toISOString());
 (async () => {
     let i = 0;
     for (const url of urls) {
-        console.log(`Fetching: ${url} at ${new Date().toISOString()}`);
+        console.log(`Fetching: url at ${new Date().toISOString()}`);
         const data = await fetchingContent(url);
         if (data) {
             await parseContent(data, api_key[i]);

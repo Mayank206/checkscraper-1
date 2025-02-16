@@ -44,7 +44,7 @@ export async function fetchingContent(url) {
         if (data) {
             return data;
         } else {
-            throw new Error(`Failed to decode JSON response from ${url}`);
+            throw new Error(`Failed to decode JSON response`);
         }
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -58,7 +58,7 @@ export async function parseContent(content, api_key){
             if (res) {
                 await generateContent(res, api_key);
             } else {
-                throw new Error(`problem in parseContent ${url}`);
+                throw new Error(`problem in parseContent`);
             }
         }
     } catch(error){
