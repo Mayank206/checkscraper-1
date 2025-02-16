@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "0 4,7,10,13,16 * * *" # Runs every hour at 10am, 1pm, 4pm, 7pm and 10pm
   workflow_dispatch:  # Allows manual trigger
+permissions:
+  actions: read  # Change to write if needed
+  contents: read
+  security-events: write
 
 jobs:
   run-script:
