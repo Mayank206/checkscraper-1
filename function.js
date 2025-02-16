@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -13,6 +14,8 @@ const jobSchema = new mongoose.Schema({
     job_id: { type: Number }, // Unique identifier for the job
     role: { type: String, required: true }, // Job title or role being offered
     company: { type: String, required: true }, // Company name
+    category:{type:String, required: true},
+    sub_category:{type:String, required:true},
     skills: { type: [String], default: [] }, // Required skills (add based on job role if not mentioned)
     experience_min: { type: Number, default: 0 }, // Min years of experience
     experience_max: { type: Number, default: 0 }, // Max years of experience
@@ -75,6 +78,23 @@ async function generateContent(content, api_key){
             "job_id": NumberInt("Integer"),  # Unique identifier for the job. Extract from apply_link.
             "role": "string",  # Job title or role being offered.
             "company": "string",
+            "category" : "string", # tag one out of these [Software Development, DevOps & Cloud Engineering, AI/ML, Cybersecurity , Database & Infrastructure, Testing & Quality Assurance (QA), IT Support & System Administration, Business & Product Management, UI/UX Design, Blockchain, Non-Tech]
+            "sub_category": string  # Select an appropriate sub-category based on the chosen category. 
+                                     # The sub-category must be one of the predefined values from the list below:
+            {
+              "Software Development": ["Frontend", "Backend", "Full Stack", "Android", "iOS", "Game Development", "Embedded Systems"],
+              "DevOps & Cloud Engineering": ["DevOps Engineer", "Cloud Engineer", "Site Reliability Engineer (SRE)", "Kubernetes Engineer"],
+              "AI/ML": ["Data Scientist", "Machine Learning Engineer", "AI Engineer", "Deep Learning Engineer"],
+              "Cybersecurity": ["Cybersecurity Engineer", "Ethical Hacker", "SOC Analyst", "Security Architect"],
+              "Database & Infrastructure": ["Database Administrator (DBA)", "Data Engineer", "Cloud Database Engineer"],
+              "Testing & Quality Assurance (QA)": ["Manual Tester", "Automation Tester", "Performance Tester", "Security Tester"],
+              "IT Support & System Administration": ["IT Support Engineer", "System Administrator", "Help Desk Technician"],
+              "Business & Product Management": ["Product Development", "Business Analyst", "Scrum Master"],
+              "UI/UX Design": ["UI Designer", "UX Designer", "Graphic Designer"],
+              "Blockchain": ["Blockchain Developer", "Smart Contract Developer", "Web3 Engineer"],
+              "Non-Tech": ["Tech Recruiter", "IT Sales", "Technical Writer"],
+              "Other": "Other"
+            }
             "skills": ["string"],  # Required skills for the job. (If not mentioned in html_content, add according to job role)
             "experience_min": NumberInt("Integer"),  # Minimum years of experience required.
             "experience_max": NumberInt("Integer"),  # Maximum years of experience required.
@@ -116,7 +136,7 @@ async function generateContent(content, api_key){
         const result = await model.generateContent(prompt);
         const data = await result.response.text().slice(8, -5);
         saveJob(JSON.parse(data));  // Ensure correct output
-        } catch (error) {
+    } catch (error) {
         console.error('Error generating content: Problem with Gemini Api');
     }
 }
@@ -126,8 +146,23 @@ async function saveJob(data){
         if (typeof data !== 'object' || data === null) {
             throw new Error("Invalid data format: Data must be an object");
         }
-        const existData = await Job.findOne( {role:data.role, company:data.company});
-        if(existData){
+        const url = data['apply_link'].split('&')[0];
+        if(await checkLink(url)){
+            data['apply_link'] = url;
+        }
+        const existData = await Job.findOne({
+            apply_link: data.apply_link
+        });
+        const existData2 = await Job.findOne({
+            company: data.company,
+            role: data.role
+        });
+        const existData3 = await Job.findOne({
+            company: data.company,
+            category: data.category,
+            sub_category: data.sub_category
+        });
+        if(existData || existData2 || existData3){
             console.log("Job already exists in the database");
             return ;
         }
@@ -152,3 +187,14 @@ export async function deleteJobs(){
         console.error("Error in deleteJobs:", error.message);
     }
 }
+
+
+async function checkLink(url) {
+    try {
+        const response = await axios.get(url, { timeout: 2000 });
+        return response.status >= 200 && response.status < 400;
+    } catch (error) {
+        return false;
+    }
+}
+
